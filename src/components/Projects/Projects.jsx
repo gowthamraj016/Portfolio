@@ -1,104 +1,117 @@
-import React from 'react'
-import { motion } from 'framer-motion'
+import React, { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { FiGithub, FiExternalLink, FiStar, FiFolder } from 'react-icons/fi'
+import { FiGithub, FiExternalLink, FiArrowUpRight } from 'react-icons/fi'
 import { featuredProjects } from '../../data/portfolio'
 import './Projects.css'
 
-const ProjectCard = ({ project, index, inView }) => (
-  <motion.div
-    className="project-card card"
-    style={{ '--project-color': project.color }}
-    initial={{ opacity: 0, y: 40 }}
-    animate={inView ? { opacity: 1, y: 0 } : {}}
-    transition={{ duration: 0.6, delay: index * 0.15 }}
-    whileHover={{ y: -6 }}
-  >
-    {/* Top bar with featured tag */}
-    <div className="project-card__top">
-      <span className="project-card__featured-badge">Featured</span>
-      <span className="badge">{project.category}</span>
-    </div>
-
-    {/* Icon and title */}
-    <div className="project-card__header">
-      <div className="project-card__icon">{project.icon}</div>
-      <div>
-        <h3 className="project-card__title">{project.title}</h3>
-      </div>
-    </div>
-
-    {/* Description */}
-    <p className="project-card__desc">{project.description}</p>
-
-    {/* Tech stack */}
-    <div className="project-card__tech">
-      {project.tech.map((t, i) => (
-        <span key={i} className="project-card__tech-tag">{t}</span>
-      ))}
-    </div>
-
-    {/* Links */}
-    <div className="project-card__links">
-      {project.github && (
-        <a href={project.github} target="_blank" rel="noopener noreferrer" className="project-card__link">
-          <FiGithub size={15} /> Source Code
-        </a>
-      )}
-      {project.demo && (
-        <a href={project.demo} target="_blank" rel="noopener noreferrer" className="project-card__link project-card__link--demo">
-          <FiExternalLink size={15} /> Live Demo
-        </a>
-      )}
-    </div>
-
-    {/* Colored bottom border */}
-    <div className="project-card__accent" />
-  </motion.div>
-)
-
-const Projects = () => {
-  const [ref, inView] = useInView({ threshold: 0.1, triggerOnce: true })
+export default function Projects() {
+  const [hovered, setHovered] = useState(null)
+  const [ref, inView] = useInView({ threshold:.08, triggerOnce:true })
 
   return (
-    <section id="projects" className="section projects" ref={ref}>
+    <section id="projects" className="section projects" ref={ref}
+      style={{ '--section-accent':'var(--c-pink)' }}>
       <div className="container">
-        <motion.div
-          className="section-title"
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <h2>Featured Projects</h2>
-          <div className="section-divider" />
-          <p>Hand-picked projects I'm proud of</p>
+        <motion.div className="projects__header"
+          initial={{ opacity:0, y:30 }} animate={inView ? { opacity:1, y:0 } : {}}
+          transition={{ duration:.6 }}>
+          <span className="section-label">Featured Work</span>
+          <h2 className="section-heading font-syne">
+            What I've <span>Built</span>
+          </h2>
+          <p className="section-sub">Hand-picked projects I'm proud of</p>
         </motion.div>
 
-        <div className="projects__grid">
-          {featuredProjects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} inView={inView} />
+        {/* Bento grid */}
+        <div className="projects__bento">
+          {featuredProjects.map((p, i) => (
+            <motion.div key={p.id}
+              className={`proj-card proj-card--${i}`}
+              style={{ '--pc': p.color }}
+              initial={{ opacity:0, y:50 }}
+              animate={inView ? { opacity:1, y:0 } : {}}
+              transition={{ duration:.6, delay:i*.13, ease:[.16,1,.3,1] }}
+              onHoverStart={() => setHovered(p.id)}
+              onHoverEnd={() => setHovered(null)}>
+
+              {/* Background gradient wash */}
+              <div className="proj-card__wash" />
+
+              {/* Number */}
+              <span className="proj-card__num font-mono">0{i+1}</span>
+
+              {/* Icon */}
+              <motion.div className="proj-card__icon"
+                animate={hovered===p.id ? { scale:1.2, rotate:10 } : { scale:1, rotate:0 }}
+                transition={{ type:'spring', stiffness:300 }}>
+                {p.icon}
+              </motion.div>
+
+              <div className="proj-card__body">
+                <div className="proj-card__cat pill"
+                  style={{ background:`color-mix(in srgb,${p.color} 12%,transparent)`,
+                           color:p.color, border:`1px solid color-mix(in srgb,${p.color} 25%,transparent)` }}>
+                  {p.category}
+                </div>
+                <h3 className="proj-card__title">{p.title}</h3>
+                <p className="proj-card__desc">{p.description}</p>
+
+                <div className="proj-card__tech">
+                  {p.tech.slice(0,4).map((t,j) => (
+                    <span key={j} className="proj-card__tech-tag font-mono">{t}</span>
+                  ))}
+                  {p.tech.length > 4 &&
+                    <span className="proj-card__tech-tag font-mono">+{p.tech.length-4}</span>}
+                </div>
+              </div>
+
+              <div className="proj-card__links">
+                {p.github && (
+                  <a href={p.github} target="_blank" rel="noopener noreferrer"
+                    className="proj-card__link">
+                    <FiGithub size={14}/> Code
+                  </a>
+                )}
+                {p.demo && (
+                  <a href={p.demo} target="_blank" rel="noopener noreferrer"
+                    className="proj-card__link proj-card__link--live">
+                    <FiExternalLink size={14}/> Live
+                  </a>
+                )}
+              </div>
+
+              {/* Arrow indicator */}
+              <AnimatePresence>
+                {hovered === p.id && (
+                  <motion.div className="proj-card__arrow"
+                    initial={{ opacity:0, scale:.5, x:10, y:-10 }}
+                    animate={{ opacity:1, scale:1, x:0, y:0 }}
+                    exit={{ opacity:0, scale:.5 }}>
+                    <FiArrowUpRight size={18}/>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Bottom color bar */}
+              <motion.div className="proj-card__bar"
+                animate={hovered===p.id ? { scaleX:1 } : { scaleX:0 }}
+                style={{ background:p.color }}
+                transition={{ duration:.3 }}/>
+            </motion.div>
           ))}
         </div>
 
-        <motion.div
-          className="projects__more"
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ delay: 0.8 }}
-        >
-          <p>Want to see more?</p>
-          <a
-            href="https://github.com/gowthamraj016"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn btn-outline"
-          >
-            <FiGithub size={18} /> View All on GitHub
+        <motion.div className="projects__cta"
+          initial={{ opacity:0 }} animate={inView ? { opacity:1 } : {}}
+          transition={{ delay:.8 }}>
+          <a href="https://github.com/gowthamraj016" target="_blank"
+            rel="noopener noreferrer" className="btn btn-ghost">
+            <FiGithub size={17}/> View All Repositories
+            <FiArrowUpRight size={14}/>
           </a>
         </motion.div>
       </div>
     </section>
   )
 }
-
-export default Projects

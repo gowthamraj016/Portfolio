@@ -1,96 +1,86 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { FiBriefcase, FiCalendar, FiMapPin, FiAward } from 'react-icons/fi'
+import { FiBriefcase, FiCalendar, FiAward, FiCheckCircle } from 'react-icons/fi'
 import { experience, certifications } from '../../data/portfolio'
 import './Experience.css'
 
-const CertCard = ({ cert, index, inView }) => (
-  <motion.div
-    className="cert-card card"
-    style={{ '--cert-color': cert.color }}
-    initial={{ opacity: 0, scale: 0.9 }}
-    animate={inView ? { opacity: 1, scale: 1 } : {}}
-    transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
-    whileHover={{ scale: 1.03 }}
-  >
-    <div className="cert-card__icon">{cert.icon}</div>
-    <div>
-      <h4 className="cert-card__title">{cert.title}</h4>
-      <p className="cert-card__issuer">{cert.issuer}</p>
-      <span className="cert-card__date">{cert.date}</span>
-    </div>
-    <span className="cert-card__badge">{cert.category}</span>
-  </motion.div>
-)
-
-const Experience = () => {
-  const [ref, inView] = useInView({ threshold: 0.1, triggerOnce: true })
+export default function Experience() {
+  const [ref, inView] = useInView({ threshold:.08, triggerOnce:true })
 
   return (
-    <section id="experience" className="section experience" ref={ref}>
+    <section id="experience" className="section experience" ref={ref}
+      style={{ '--section-accent':'var(--c-amber)' }}>
       <div className="container">
-        <motion.div
-          className="section-title"
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <h2>Experience & Certifications</h2>
-          <div className="section-divider" />
-          <p>Professional experience and achievements</p>
+
+        <motion.div className="exp__header"
+          initial={{ opacity:0, y:30 }} animate={inView ? { opacity:1, y:0 } : {}}
+          transition={{ duration:.6 }}>
+          <span className="section-label">Journey</span>
+          <h2 className="section-heading font-syne">
+            Experience &amp; <span>Certifications</span>
+          </h2>
+          <p className="section-sub">Professional milestones and achievements</p>
         </motion.div>
 
-        {/* Timeline */}
-        <div className="experience__timeline">
-          {experience.map((exp, index) => (
-            <motion.div
-              key={exp.id}
-              className="timeline-item"
-              initial={{ opacity: 0, x: -40 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              {/* Timeline line */}
-              <div className="timeline-item__line">
-                <div className="timeline-item__dot" style={{ background: exp.color }}>
+        {/* ── Timeline ── */}
+        <div className="exp__timeline">
+          {experience.map((exp, i) => (
+            <motion.div key={exp.id} className="tl-item"
+              initial={{ opacity:0, x:-50 }}
+              animate={inView ? { opacity:1, x:0 } : {}}
+              transition={{ duration:.65, delay:.2 }}>
+
+              {/* Vertical connector */}
+              <div className="tl-item__track">
+                <div className="tl-item__node" style={{ background:exp.color, boxShadow:`0 0 16px ${exp.color}` }}>
                   <span>{exp.icon}</span>
                 </div>
-                <div className="timeline-item__connector" />
+                <div className="tl-item__line" />
               </div>
 
               {/* Content */}
-              <div className="timeline-item__content card">
-                <div className="timeline-item__header">
+              <div className="tl-item__card">
+                {/* Glow border */}
+                <div className="tl-item__glow-edge" style={{ background:exp.color }} />
+
+                <div className="tl-item__top">
                   <div>
-                    <h3 className="timeline-item__role">{exp.role}</h3>
-                    <div className="timeline-item__meta">
-                      <span className="timeline-item__company">
-                        <FiBriefcase size={13} /> {exp.company}
+                    <h3 className="tl-item__role">{exp.role}</h3>
+                    <div className="tl-item__meta">
+                      <span className="tl-item__company">
+                        <FiBriefcase size={13}/> {exp.company}
                       </span>
-                      <span className="timeline-item__type">{exp.type}</span>
+                      <span className="tl-item__badge"
+                        style={{ background:`color-mix(in srgb,var(--c-cyan) 10%,transparent)`,
+                                 color:'var(--c-cyan)', border:`1px solid color-mix(in srgb,var(--c-cyan) 22%,transparent)` }}>
+                        {exp.type}
+                      </span>
                     </div>
                   </div>
-                  <div className="timeline-item__duration">
-                    <span className="timeline-item__period">
-                      <FiCalendar size={13} /> {exp.duration}
+                  <div className="tl-item__dates">
+                    <span className="tl-item__period">
+                      <FiCalendar size={12}/> {exp.duration}
                     </span>
-                    <span className="timeline-item__length">{exp.period}</span>
+                    <span className="tl-item__length">{exp.period}</span>
                   </div>
                 </div>
 
-                <ul className="timeline-item__points">
-                  {exp.description.map((point, i) => (
-                    <li key={i}>
-                      <span className="timeline-item__bullet" />
-                      {point}
-                    </li>
+                <ul className="tl-item__points">
+                  {exp.description.map((pt, j) => (
+                    <motion.li key={j}
+                      initial={{ opacity:0, x:-10 }}
+                      animate={inView ? { opacity:1, x:0 } : {}}
+                      transition={{ delay:.4+j*.07 }}>
+                      <FiCheckCircle size={14} style={{ color:exp.color, flexShrink:0, marginTop:2 }}/>
+                      <span>{pt}</span>
+                    </motion.li>
                   ))}
                 </ul>
 
-                <div className="timeline-item__skills">
-                  {exp.skills.map((skill, i) => (
-                    <span key={i} className="badge">{skill}</span>
+                <div className="tl-item__tags">
+                  {exp.skills.map((s,j) => (
+                    <span key={j} className="tag" style={{ '--section-accent':exp.color }}>{s}</span>
                   ))}
                 </div>
               </div>
@@ -98,19 +88,37 @@ const Experience = () => {
           ))}
         </div>
 
-        {/* Certifications */}
-        <motion.div
-          className="experience__certs-section"
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ delay: 0.4 }}
-        >
-          <h3 className="experience__certs-title">
-            <FiAward size={20} /> Certifications & Simulations
+        {/* ── Certifications ── */}
+        <motion.div className="exp__certs"
+          initial={{ opacity:0, y:30 }}
+          animate={inView ? { opacity:1, y:0 } : {}}
+          transition={{ delay:.5 }}>
+          <h3 className="exp__certs-heading">
+            <FiAward size={20}/> Certifications
           </h3>
-          <div className="experience__certs-grid">
-            {certifications.map((cert, index) => (
-              <CertCard key={cert.id} cert={cert} index={index} inView={inView} />
+          <div className="exp__certs-grid">
+            {certifications.map((c, i) => (
+              <motion.div key={c.id} className="cert-card"
+                style={{ '--cc': c.color }}
+                initial={{ opacity:0, scale:.9 }}
+                animate={inView ? { opacity:1, scale:1 } : {}}
+                transition={{ delay:.6+i*.09 }}
+                whileHover={{ scale:1.04, y:-4 }}>
+                {/* Corner glow */}
+                <div className="cert-card__corner" />
+
+                <div className="cert-card__icon">{c.icon}</div>
+                <div className="cert-card__info">
+                  <h4 className="cert-card__title">{c.title}</h4>
+                  <p className="cert-card__issuer">{c.issuer}</p>
+                  <span className="cert-card__date">{c.date}</span>
+                </div>
+                <span className="cert-card__type"
+                  style={{ background:`color-mix(in srgb,${c.color} 12%,transparent)`,
+                           color:c.color, border:`1px solid color-mix(in srgb,${c.color} 25%,transparent)` }}>
+                  {c.category}
+                </span>
+              </motion.div>
             ))}
           </div>
         </motion.div>
@@ -118,5 +126,3 @@ const Experience = () => {
     </section>
   )
 }
-
-export default Experience

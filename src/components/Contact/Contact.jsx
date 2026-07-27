@@ -1,242 +1,185 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { FiMail, FiGithub, FiLinkedin, FiPhone, FiMapPin, FiSend, FiCheck } from 'react-icons/fi'
+import { FiMail, FiGithub, FiLinkedin, FiMapPin, FiSend, FiCheck, FiArrowUpRight } from 'react-icons/fi'
 import { personalInfo } from '../../data/portfolio'
 import './Contact.css'
 
-const contactLinks = [
-  {
-    icon: <FiMail size={20} />,
-    label: 'Email',
-    value: personalInfo.email,
-    href: `mailto:${personalInfo.email}`,
-    color: '#6366f1',
-  },
-  {
-    icon: <FiGithub size={20} />,
-    label: 'GitHub',
-    value: '@gowthamraj016',
-    href: personalInfo.github,
-    color: '#8b5cf6',
-  },
-  {
-    icon: <FiLinkedin size={20} />,
-    label: 'LinkedIn',
-    value: 'D. Naga Gowtham Raj',
-    href: personalInfo.linkedin,
-    color: '#06b6d4',
-  },
-  {
-    icon: <FiMapPin size={20} />,
-    label: 'Location',
-    value: 'Bengaluru, Karnataka, India',
-    href: null,
-    color: '#10b981',
-  },
+const links = [
+  { icon:<FiMail size={18}/>,    label:'Email',    val:personalInfo.email,
+    href:`mailto:${personalInfo.email}`, color:'var(--c-violet)' },
+  { icon:<FiGithub size={18}/>,  label:'GitHub',   val:'@gowthamraj016',
+    href:personalInfo.github, color:'var(--c-cyan)' },
+  { icon:<FiLinkedin size={18}/>,label:'LinkedIn',  val:'D. Naga Gowtham Raj',
+    href:personalInfo.linkedin, color:'var(--c-blue)' },
+  { icon:<FiMapPin size={18}/>,  label:'Location',  val:'Bengaluru, India',
+    href:null, color:'var(--c-green)' },
 ]
 
-const Contact = () => {
-  const [ref, inView] = useInView({ threshold: 0.15, triggerOnce: true })
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
-  const [status, setStatus] = useState('idle') // idle | sending | sent | error
-  const [errors, setErrors] = useState({})
+export default function Contact() {
+  const [ref, inView] = useInView({ threshold:.1, triggerOnce:true })
+  const [form, setForm]   = useState({ name:'', email:'', subject:'', message:'' })
+  const [errs, setErrs]   = useState({})
+  const [status, setStatus] = useState('idle')
 
   const validate = () => {
     const e = {}
-    if (!form.name.trim()) e.name = 'Name is required'
-    if (!form.email.trim()) e.email = 'Email is required'
+    if (!form.name.trim())   e.name    = 'Required'
+    if (!form.email.trim())  e.email   = 'Required'
     else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = 'Invalid email'
-    if (!form.subject.trim()) e.subject = 'Subject is required'
-    if (!form.message.trim()) e.message = 'Message is required'
+    if (!form.subject.trim()) e.subject = 'Required'
+    if (!form.message.trim()) e.message = 'Required'
     return e
   }
 
-  const handleChange = (e) => {
+  const change = e => {
     const { name, value } = e.target
-    setForm(prev => ({ ...prev, [name]: value }))
-    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }))
+    setForm(p => ({ ...p, [name]:value }))
+    if (errs[name]) setErrs(p => ({ ...p, [name]:'' }))
   }
 
-  const handleSubmit = async (e) => {
+  const submit = async e => {
     e.preventDefault()
-    const validationErrors = validate()
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors)
-      return
-    }
-
+    const v = validate()
+    if (Object.keys(v).length) { setErrs(v); return }
     setStatus('sending')
-    // Simulate form submission (replace with your backend/Formspree/EmailJS)
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    await new Promise(r => setTimeout(r, 1500))
     setStatus('sent')
-    setForm({ name: '', email: '', subject: '', message: '' })
-    setTimeout(() => setStatus('idle'), 4000)
+    setForm({ name:'', email:'', subject:'', message:'' })
+    setTimeout(() => setStatus('idle'), 5000)
   }
 
   return (
-    <section id="contact" className="section contact" ref={ref}>
+    <section id="contact" className="section contact" ref={ref}
+      style={{ '--section-accent':'var(--c-violet)' }}>
       <div className="container">
-        <motion.div
-          className="section-title"
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <h2>Get In Touch</h2>
-          <div className="section-divider" />
-          <p>Have a project in mind or want to connect? Drop a message!</p>
+        <motion.div className="contact__header"
+          initial={{ opacity:0, y:30 }} animate={inView ? { opacity:1, y:0 } : {}}
+          transition={{ duration:.6 }}>
+          <span className="section-label">Contact</span>
+          <h2 className="section-heading font-syne">
+            Let's <span>Connect</span>
+          </h2>
+          <p className="section-sub">Open to internships, collaborations and exciting projects</p>
         </motion.div>
 
         <div className="contact__grid">
-          {/* Left: Info */}
-          <motion.div
-            className="contact__info"
-            initial={{ opacity: 0, x: -40 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.2 }}
-          >
-            <h3 className="contact__info-heading">Let's work together</h3>
-            <p className="contact__info-text">
-              I'm currently open to internship opportunities, collaborative projects, and full-time roles.
-              Whether you have a question or just want to say hi — my inbox is always open!
+          {/* Left */}
+          <motion.div className="contact__left"
+            initial={{ opacity:0, x:-40 }}
+            animate={inView ? { opacity:1, x:0 } : {}}
+            transition={{ duration:.7, delay:.2 }}>
+
+            <div className="contact__availability">
+              <span className="glow-dot"/>
+              <span>Currently available for new opportunities</span>
+            </div>
+
+            <p className="contact__blurb">
+              I'm actively looking for internships and full-time roles in software development,
+              AI/ML, and full-stack engineering. Have something in mind? Let's chat!
             </p>
 
             <div className="contact__links">
-              {contactLinks.map((item, i) => (
-                <motion.div
-                  key={i}
-                  className="contact__link-item"
-                  style={{ '--link-color': item.color }}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={inView ? { opacity: 1, x: 0 } : {}}
-                  transition={{ delay: 0.3 + i * 0.1 }}
-                >
-                  <div className="contact__link-icon">{item.icon}</div>
-                  <div>
-                    <p className="contact__link-label">{item.label}</p>
-                    {item.href ? (
-                      <a href={item.href} target={item.href.startsWith('mailto') ? undefined : '_blank'} rel="noopener noreferrer" className="contact__link-value">
-                        {item.value}
-                      </a>
-                    ) : (
-                      <p className="contact__link-value">{item.value}</p>
-                    )}
+              {links.map((l,i) => (
+                <motion.div key={i} className="contact__link-row"
+                  style={{ '--lc': l.color }}
+                  initial={{ opacity:0, x:-18 }}
+                  animate={inView ? { opacity:1, x:0 } : {}}
+                  transition={{ delay:.3+i*.1 }}
+                  whileHover={{ x:4 }}>
+                  <div className="contact__link-icon">{l.icon}</div>
+                  <div className="contact__link-text">
+                    <span className="contact__link-label">{l.label}</span>
+                    {l.href
+                      ? <a href={l.href} target={l.href.startsWith('mailto')?undefined:'_blank'}
+                          rel="noopener noreferrer" className="contact__link-val">
+                          {l.val} <FiArrowUpRight size={11}/>
+                        </a>
+                      : <span className="contact__link-val">{l.val}</span>
+                    }
                   </div>
                 </motion.div>
               ))}
             </div>
 
-            <div className="contact__social">
-              <a href={personalInfo.github} target="_blank" rel="noopener noreferrer" className="contact__social-btn">
-                <FiGithub size={20} />
+            <div className="contact__socials">
+              <a href={personalInfo.github} target="_blank" rel="noopener noreferrer"
+                className="contact__social" aria-label="GitHub">
+                <FiGithub size={18}/>
               </a>
-              <a href={personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="contact__social-btn">
-                <FiLinkedin size={20} />
+              <a href={personalInfo.linkedin} target="_blank" rel="noopener noreferrer"
+                className="contact__social" aria-label="LinkedIn">
+                <FiLinkedin size={18}/>
               </a>
-              <a href={`mailto:${personalInfo.email}`} className="contact__social-btn">
-                <FiMail size={20} />
+              <a href={`mailto:${personalInfo.email}`}
+                className="contact__social" aria-label="Email">
+                <FiMail size={18}/>
               </a>
             </div>
           </motion.div>
 
-          {/* Right: Form */}
-          <motion.div
-            className="contact__form-wrap"
-            initial={{ opacity: 0, x: 40 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.3 }}
-          >
-            <form className="contact__form card" onSubmit={handleSubmit} noValidate>
-              <h3 className="contact__form-title">Send a Message</h3>
+          {/* Form */}
+          <motion.form className="contact__form"
+            onSubmit={submit} noValidate
+            initial={{ opacity:0, x:40 }}
+            animate={inView ? { opacity:1, x:0 } : {}}
+            transition={{ duration:.7, delay:.3 }}>
 
-              <div className="contact__form-row">
-                <div className="contact__field">
-                  <label htmlFor="name">Your Name</label>
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    placeholder="John Doe"
-                    value={form.name}
-                    onChange={handleChange}
-                    className={errors.name ? 'error' : ''}
-                    autoComplete="name"
-                  />
-                  {errors.name && <span className="contact__error">{errors.name}</span>}
+            {/* Shimmer top */}
+            <div className="contact__form-strip" />
+
+            <h3 className="contact__form-title">Send a Message</h3>
+
+            <div className="contact__row">
+              {[
+                { name:'name',  type:'text',  label:'Your Name',      ph:'John Doe' },
+                { name:'email', type:'email', label:'Email Address',   ph:'john@example.com' },
+              ].map(f => (
+                <div key={f.name} className="contact__field">
+                  <label htmlFor={f.name}>{f.label}</label>
+                  <input id={f.name} name={f.name} type={f.type}
+                    placeholder={f.ph} value={form[f.name]} onChange={change}
+                    className={errs[f.name]?'err':''} autoComplete={f.name}/>
+                  {errs[f.name] && <span className="contact__err">{errs[f.name]}</span>}
                 </div>
-                <div className="contact__field">
-                  <label htmlFor="email">Email Address</label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="john@example.com"
-                    value={form.email}
-                    onChange={handleChange}
-                    className={errors.email ? 'error' : ''}
-                    autoComplete="email"
-                  />
-                  {errors.email && <span className="contact__error">{errors.email}</span>}
-                </div>
-              </div>
+              ))}
+            </div>
 
-              <div className="contact__field">
-                <label htmlFor="subject">Subject</label>
-                <input
-                  id="subject"
-                  name="subject"
-                  type="text"
-                  placeholder="Internship Opportunity / Collaboration..."
-                  value={form.subject}
-                  onChange={handleChange}
-                  className={errors.subject ? 'error' : ''}
-                />
-                {errors.subject && <span className="contact__error">{errors.subject}</span>}
-              </div>
+            <div className="contact__field">
+              <label htmlFor="subject">Subject</label>
+              <input id="subject" name="subject" type="text"
+                placeholder="Internship / Collaboration..." value={form.subject}
+                onChange={change} className={errs.subject?'err':''}/>
+              {errs.subject && <span className="contact__err">{errs.subject}</span>}
+            </div>
 
-              <div className="contact__field">
-                <label htmlFor="message">Message</label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={5}
-                  placeholder="Hi Gowtham, I'd like to discuss..."
-                  value={form.message}
-                  onChange={handleChange}
-                  className={errors.message ? 'error' : ''}
-                />
-                {errors.message && <span className="contact__error">{errors.message}</span>}
-              </div>
+            <div className="contact__field">
+              <label htmlFor="message">Message</label>
+              <textarea id="message" name="message" rows={5}
+                placeholder="Hi Gowtham, I'd like to discuss..." value={form.message}
+                onChange={change} className={errs.message?'err':''}/>
+              {errs.message && <span className="contact__err">{errs.message}</span>}
+            </div>
 
-              <motion.button
-                type="submit"
-                className={`btn btn-primary contact__submit ${status}`}
-                disabled={status === 'sending' || status === 'sent'}
-                whileHover={status === 'idle' ? { scale: 1.02 } : {}}
-                whileTap={status === 'idle' ? { scale: 0.98 } : {}}
-              >
-                {status === 'idle' && <><FiSend size={16} /> Send Message</>}
-                {status === 'sending' && <>Sending...</>}
-                {status === 'sent' && <><FiCheck size={16} /> Message Sent!</>}
-                {status === 'error' && <>Failed. Try again.</>}
-              </motion.button>
+            <motion.button type="submit"
+              className={`contact__submit btn btn-primary ${status}`}
+              disabled={status==='sending'||status==='sent'}
+              whileHover={status==='idle'?{scale:1.02}:{}}
+              whileTap={status==='idle'?{scale:.97}:{}}>
+              {status==='idle'   && <><FiSend size={15}/> Send Message</>}
+              {status==='sending'&& <>Sending…</>}
+              {status==='sent'   && <><FiCheck size={15}/> Sent! 🎉</>}
+            </motion.button>
 
-              {status === 'sent' && (
-                <motion.p
-                  className="contact__success"
-                  initial={{ opacity: 0, y: 5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  🎉 Thanks for reaching out! I'll get back to you soon.
-                </motion.p>
-              )}
-            </form>
-          </motion.div>
+            {status==='sent' &&
+              <motion.p className="contact__success"
+                initial={{ opacity:0, y:4 }} animate={{ opacity:1, y:0 }}>
+                Thanks! I'll get back to you soon.
+              </motion.p>}
+          </motion.form>
         </div>
       </div>
     </section>
   )
 }
-
-export default Contact

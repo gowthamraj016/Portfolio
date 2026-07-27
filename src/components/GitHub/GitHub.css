@@ -1,245 +1,199 @@
 .github {
-  background: var(--bg-primary);
+  background:var(--bg-secondary);
+  position:relative;
+  overflow:hidden;
+}
+.github::before {
+  content:'';
+  position:absolute;
+  top:-100px; right:-100px;
+  width:400px; height:400px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(34,211,238,.06) 0%,transparent 65%);
+  pointer-events:none;
 }
 
-.github__profile-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.6rem 1.25rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  margin: 0 auto 2rem;
-  display: flex;
-  width: fit-content;
-  transition: all 0.2s ease;
-}
+.github__header { margin-bottom:2.5rem; display:flex; flex-direction:column; gap:.5rem; }
 
-.github__profile-link:hover {
-  border-color: var(--accent-primary);
-  color: var(--accent-primary);
+/* Profile pill */
+.github__profile {
+  display:inline-flex;
+  align-items:center;
+  gap:.7rem;
+  padding:.55rem 1.1rem;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  color:var(--text-secondary);
+  font-size:.875rem;
+  font-weight:500;
+  text-decoration:none;
+  width:fit-content;
+  margin:0 0 1.75rem;
+  transition:all .2s;
 }
-
-.github__profile-count {
-  padding: 0.15rem 0.5rem;
-  background: rgba(99, 102, 241, 0.12);
-  color: var(--accent-primary);
-  border-radius: 20px;
-  font-size: 0.78rem;
-  font-weight: 600;
+.github__profile:hover { border-color:var(--c-cyan); color:var(--c-cyan); }
+.github__repo-count {
+  padding:.15rem .55rem;
+  background:color-mix(in srgb,var(--c-cyan) 12%,transparent);
+  color:var(--c-cyan);
+  border-radius:20px;
+  font-size:.75rem;
+  font-weight:700;
 }
 
 /* Filters */
-.github__filters {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
+.github__filters { display:flex; flex-direction:column; gap:.9rem; margin-bottom:1.25rem; }
 
 .github__search {
-  position: relative;
-  max-width: 400px;
+  position:relative;
+  max-width:380px;
 }
-
 .github__search-icon {
-  position: absolute;
-  left: 0.875rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-muted);
-  pointer-events: none;
+  position:absolute;
+  left:.875rem; top:50%;
+  transform:translateY(-50%);
+  color:var(--text-muted);
+  pointer-events:none;
 }
-
 .github__search-input {
-  width: 100%;
-  padding: 0.65rem 0.875rem 0.65rem 2.5rem;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  font-family: inherit;
-  transition: all 0.2s ease;
-  outline: none;
+  width:100%;
+  padding:.62rem .875rem .62rem 2.5rem;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  color:var(--text-primary);
+  font-size:.875rem;
+  font-family:inherit;
+  outline:none;
+  transition:all .2s;
 }
-
 .github__search-input:focus {
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color:var(--c-cyan);
+  box-shadow:0 0 0 3px rgba(34,211,238,.1);
 }
+.github__search-input::placeholder { color:var(--text-muted); }
 
-.github__search-input::placeholder { color: var(--text-muted); }
-
-.github__lang-filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
+.github__langs { display:flex; flex-wrap:wrap; gap:.5rem; }
 
 .github__lang-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.85rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  cursor: pointer;
-  border: 1px solid var(--border-color);
-  background: var(--bg-card);
-  color: var(--text-secondary);
-  transition: all 0.2s ease;
+  display:inline-flex;
+  align-items:center;
+  gap:.4rem;
+  padding:.3rem .8rem;
+  border-radius:20px;
+  font-size:.78rem;
+  font-weight:500;
+  cursor:pointer;
+  border:1px solid var(--border);
+  background:var(--bg-card);
+  color:var(--text-secondary);
+  transition:all .2s;
+  font-family:inherit;
 }
+.github__lang-btn:hover, .github__lang-btn.on {
+  border-color:var(--c-cyan);
+  color:var(--c-cyan);
+  background:color-mix(in srgb,var(--c-cyan) 8%,transparent);
+}
+.github__lang-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
 
-.github__lang-btn:hover,
-.github__lang-btn.active {
-  border-color: var(--accent-primary);
-  color: var(--accent-primary);
-  background: rgba(99, 102, 241, 0.08);
+.github__info {
+  font-size:.8rem;
+  color:var(--text-muted);
+  margin-bottom:1.1rem;
+  font-family:'Fira Code',monospace;
 }
-
-.github__lang-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-/* Results info */
-.github__results-info {
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-bottom: 1.25rem;
-}
+.github__info span { color:var(--c-cyan); }
 
 /* Grid */
 .github__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.1rem;
 }
 
-/* Repo Card */
+/* Repo card */
 .repo-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 1.25rem;
-  text-decoration: none;
-  color: inherit;
-  min-height: 150px;
+  display:flex;
+  flex-direction:column;
+  gap:.75rem;
+  padding:1.2rem;
+  text-decoration:none;
+  color:inherit;
+  min-height:140px;
+  transition:all .28s;
 }
+.repo-card:hover { border-color:var(--c-cyan); transform:translateY(-4px); }
 
 .repo-card__header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  display:flex;
+  align-items:center;
+  gap:.4rem;
 }
-
-.repo-card__icon { color: var(--text-muted); flex-shrink: 0; }
-
+.repo-card__icon { color:var(--text-muted); flex-shrink:0; }
 .repo-card__name {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--accent-primary);
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-family: 'Fira Code', monospace;
+  font-size:.875rem;
+  font-weight:700;
+  color:var(--c-cyan);
+  flex:1;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-family:'Fira Code',monospace;
 }
-
-.repo-card__external {
-  color: var(--text-muted);
-  flex-shrink: 0;
-  opacity: 0;
-  transition: opacity 0.2s;
+.repo-card__ext {
+  color:var(--text-muted);
+  flex-shrink:0;
+  opacity:0;
+  transition:opacity .2s;
 }
-
-.repo-card:hover .repo-card__external { opacity: 1; }
+.repo-card:hover .repo-card__ext { opacity:1; }
 
 .repo-card__desc {
-  font-size: 0.83rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  flex: 1;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+  font-size:.8rem;
+  color:var(--text-secondary);
+  line-height:1.6;
+  flex:1;
+  overflow:hidden;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
 }
 
-.repo-card__footer {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: auto;
+.repo-card__foot {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:.65rem;
+  margin-top:auto;
 }
-
 .repo-card__lang {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.78rem;
-  color: var(--text-secondary);
+  display:flex; align-items:center; gap:.3rem;
+  font-size:.75rem; color:var(--text-secondary);
 }
-
-.repo-card__lang-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
+.repo-card__lang-dot { width:9px; height:9px; border-radius:50%; }
 .repo-card__stat {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.78rem;
-  color: var(--text-muted);
+  display:flex; align-items:center; gap:.25rem;
+  font-size:.73rem; color:var(--text-muted);
 }
-
 .repo-card__date {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  margin-left: auto;
+  display:flex; align-items:center; gap:.25rem;
+  font-size:.7rem; color:var(--text-muted);
+  margin-left:auto;
+  font-family:'Fira Code',monospace;
 }
 
 /* States */
-.github__loading,
-.github__error,
-.github__empty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  padding: 4rem;
-  color: var(--text-muted);
-  flex-direction: column;
+.github__loading, .github__error, .github__empty {
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:.75rem; padding:4rem;
+  color:var(--text-muted);
 }
+.github__error { color:var(--c-red); }
 
-.github__error { color: #ef4444; }
+.github__more { text-align:center; margin-top:2rem; }
 
-.github__show-more {
-  text-align: center;
-  margin-top: 2rem;
-}
-
-@media (max-width: 1024px) {
-  .github__grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 600px) {
-  .github__grid { grid-template-columns: 1fr; }
-  .github__lang-filters { flex-wrap: wrap; }
-}
+@media(max-width:1024px) { .github__grid { grid-template-columns:repeat(2,1fr); } }
+@media(max-width:600px)  { .github__grid { grid-template-columns:1fr; } }

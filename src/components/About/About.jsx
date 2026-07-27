@@ -1,130 +1,128 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { FiCode, FiCpu, FiCloud, FiLayers, FiGithub, FiLinkedin, FiMail } from 'react-icons/fi'
+import { FiGithub, FiLinkedin, FiMail, FiArrowUpRight } from 'react-icons/fi'
+import { BsRobot, BsCloud, BsCodeSlash, BsLayers } from 'react-icons/bs'
 import { personalInfo } from '../../data/portfolio'
 import './About.css'
 
 const interests = [
-  { icon: <FiCode size={20} />, label: 'Software Engineering', color: '#6366f1' },
-  { icon: <FiCpu size={20} />, label: 'Artificial Intelligence', color: '#8b5cf6' },
-  { icon: <FiLayers size={20} />, label: 'Machine Learning', color: '#06b6d4' },
-  { icon: <FiCloud size={20} />, label: 'Cloud Computing', color: '#10b981' },
+  { icon:<BsCodeSlash size={18}/>, label:'Software Engineering', color:'var(--c-violet)' },
+  { icon:<BsRobot size={18}/>,     label:'Artificial Intelligence', color:'var(--c-cyan)' },
+  { icon:<BsLayers size={18}/>,    label:'Machine Learning', color:'var(--c-pink)' },
+  { icon:<BsCloud size={18}/>,     label:'Cloud & DevOps', color:'var(--c-green)' },
 ]
 
-const About = () => {
-  const [ref, inView] = useInView({ threshold: 0.2, triggerOnce: true })
+const facts = [
+  { label:'University',  value:'Amrita Vishwa Vidyapeetham' },
+  { label:'Degree',      value:'B.Tech CSE (AI)' },
+  { label:'CGPA',        value:'7.37 / 10' },
+  { label:'Location',    value:'Bengaluru, India' },
+  { label:'Status',      value:'Open to Opportunities' },
+  { label:'Email',       value:personalInfo.email },
+]
+
+export default function About() {
+  const [ref, inView] = useInView({ threshold:.12, triggerOnce:true })
 
   return (
-    <section id="about" className="section about" ref={ref}>
-      <div className="container">
-        <motion.div
-          className="section-title"
-          initial={{ opacity: 0, y: 30 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <h2>About Me</h2>
-          <div className="section-divider" />
-          <p>Get to know me a little better</p>
+    <section id="about" className="section about" ref={ref}
+      style={{ '--section-accent':'var(--c-green)' }}>
+      <div className="container about__wrap">
+
+        {/* ── Left: info card ── */}
+        <motion.div className="about__card-col"
+          initial={{ opacity:0, x:-50 }}
+          animate={inView ? { opacity:1, x:0 } : {}}
+          transition={{ duration:.7, delay:.15 }}>
+
+          <div className="about__id-card">
+            {/* Shimmer top strip */}
+            <div className="about__id-strip" />
+
+            <div className="about__id-avatar">
+              <span className="font-syne">GR</span>
+              <div className="about__id-avatar-ring" />
+            </div>
+
+            <h3 className="about__id-name font-syne">{personalInfo.name}</h3>
+            <p className="about__id-role">CSE (AI) · Amrita Vishwa Vidyapeetham</p>
+
+            <div className="about__id-socials">
+              {[
+                { href:personalInfo.github,  icon:<FiGithub size={16}/> },
+                { href:personalInfo.linkedin,icon:<FiLinkedin size={16}/> },
+                { href:`mailto:${personalInfo.email}`, icon:<FiMail size={16}/> },
+              ].map((s,i) => (
+                <motion.a key={i} href={s.href} target={s.href.startsWith('mailto')?undefined:'_blank'}
+                  rel="noopener noreferrer" className="about__social-btn"
+                  whileHover={{ scale:1.15, rotate:8 }} whileTap={{ scale:.9 }}>
+                  {s.icon}
+                </motion.a>
+              ))}
+            </div>
+
+            <div className="about__facts">
+              {facts.map((f,i) => (
+                <motion.div key={i} className="about__fact"
+                  initial={{ opacity:0, x:-15 }}
+                  animate={inView ? { opacity:1, x:0 } : {}}
+                  transition={{ delay:.3+i*.07 }}>
+                  <span className="about__fact-label">{f.label}</span>
+                  <span className="about__fact-value">{f.value}</span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </motion.div>
 
-        <div className="about__grid">
-          {/* Left: Avatar Card */}
-          <motion.div
-            className="about__avatar-side"
-            initial={{ opacity: 0, x: -40 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.2 }}
-          >
-            <div className="about__avatar-card card">
-              <div className="about__avatar">
-                <span>GR</span>
-                <div className="about__avatar-ring" />
-              </div>
-              <h3 className="about__name">{personalInfo.name}</h3>
-              <p className="about__role">B.Tech CSE (AI) · Amrita Vishwa Vidyapeetham</p>
+        {/* ── Right: bio ── */}
+        <motion.div className="about__bio-col"
+          initial={{ opacity:0, x:50 }}
+          animate={inView ? { opacity:1, x:0 } : {}}
+          transition={{ duration:.7, delay:.2 }}>
 
-              <div className="about__social">
-                <a href={personalInfo.github} target="_blank" rel="noopener noreferrer" className="about__social-btn">
-                  <FiGithub size={18} />
-                </a>
-                <a href={personalInfo.linkedin} target="_blank" rel="noopener noreferrer" className="about__social-btn">
-                  <FiLinkedin size={18} />
-                </a>
-                <a href={`mailto:${personalInfo.email}`} className="about__social-btn">
-                  <FiMail size={18} />
-                </a>
-              </div>
+          <span className="section-label">Who I Am</span>
+          <h2 className="section-heading font-syne">
+            Building the <span>Future</span> with Code
+          </h2>
 
-              <div className="about__quick-info">
-                {[
-                  { label: 'CGPA', value: '7.37 / 10' },
-                  { label: 'Location', value: 'Bengaluru, India' },
-                  { label: 'Status', value: 'Open to Work' },
-                ].map((item, i) => (
-                  <div key={i} className="about__info-row">
-                    <span className="about__info-label">{item.label}</span>
-                    <span className="about__info-value">{item.value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </motion.div>
+          {personalInfo.about.split('\n\n').map((p,i) => (
+            <motion.p key={i} className="about__bio-text"
+              initial={{ opacity:0, y:16 }}
+              animate={inView ? { opacity:1, y:0 } : {}}
+              transition={{ delay:.4+i*.12 }}>
+              {p}
+            </motion.p>
+          ))}
 
-          {/* Right: Bio */}
-          <motion.div
-            className="about__bio-side"
-            initial={{ opacity: 0, x: 40 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.3 }}
-          >
-            <h3 className="about__bio-heading">
-              Hello! I'm <span className="about__bio-name">Naga Gowtham Raj</span> 👋
-            </h3>
-
-            {personalInfo.about.split('\n\n').map((para, i) => (
-              <p key={i} className="about__bio-text">{para}</p>
+          {/* Interest chips */}
+          <div className="about__interests">
+            {interests.map((it,i) => (
+              <motion.div key={i} className="about__interest"
+                style={{ '--ic': it.color }}
+                initial={{ opacity:0, y:12 }}
+                animate={inView ? { opacity:1, y:0 } : {}}
+                transition={{ delay:.6+i*.08 }}
+                whileHover={{ scale:1.05, y:-3 }}>
+                <span className="about__interest-icon">{it.icon}</span>
+                {it.label}
+              </motion.div>
             ))}
+          </div>
 
-            {/* Interests */}
-            <div className="about__interests">
-              <h4 className="about__interests-title">Core Interests</h4>
-              <div className="about__interests-grid">
-                {interests.map((item, i) => (
-                  <motion.div
-                    key={i}
-                    className="about__interest-item"
-                    style={{ '--interest-color': item.color }}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={inView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ delay: 0.5 + i * 0.1 }}
-                    whileHover={{ scale: 1.03 }}
-                  >
-                    <span className="about__interest-icon">{item.icon}</span>
-                    <span>{item.label}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-
-            <div className="about__ctas">
-              <a href={personalInfo.resumeLink} className="btn btn-primary" download>
-                Download Resume
-              </a>
-              <a
-                href="#contact"
-                className="btn btn-outline"
-                onClick={(e) => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }) }}
-              >
-                Get in Touch
-              </a>
-            </div>
-          </motion.div>
-        </div>
+          <div className="about__actions">
+            <a href={personalInfo.resumeLink} className="btn btn-primary" download>
+              Download Resume
+            </a>
+            <a href="#contact"
+              className="btn btn-ghost"
+              onClick={e => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior:'smooth' }) }}>
+              Let's Talk <FiArrowUpRight size={15}/>
+            </a>
+          </div>
+        </motion.div>
       </div>
     </section>
   )
 }
-
-export default About
